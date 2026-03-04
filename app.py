@@ -66,20 +66,6 @@ if st.session_state.page == "home":
     st.markdown("## 🩺 AI Health Screening Project")
     st.markdown("### 🌸 ระบบคัดกรองสุขภาพเบื้องต้น")
  
-    # -------- SVG การ์ตูนหมอ --------
-    st.markdown("""
-    <div style="text-align:center;">
-    <svg width="150" height="150" viewBox="0 0 200 200">
-        <circle cx="100" cy="80" r="40" fill="#FFE0E9"/>
-        <circle cx="85" cy="70" r="5" fill="#5D6D7E"/>
-        <circle cx="115" cy="70" r="5" fill="#5D6D7E"/>
-        <path d="M85 95 Q100 110 115 95" stroke="#5D6D7E" stroke-width="3" fill="none"/>
-        <rect x="60" y="120" width="80" height="50" rx="15" fill="#FFFFFF" stroke="#A8DADC" stroke-width="3"/>
-        <line x1="100" y1="135" x2="100" y2="155" stroke="#FFAFCC" stroke-width="4"/>
-        <line x1="90" y1="145" x2="110" y2="145" stroke="#FFAFCC" stroke-width="4"/>
-    </svg>
-    </div>
-    """, unsafe_allow_html=True)
  
     st.markdown("""
     💡 **วัตถุประสงค์ของเว็บไซต์นี้**
