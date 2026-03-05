@@ -1,190 +1,192 @@
 import streamlit as st
-import time
- 
-st.title("🌸 Pastel AI Health Screening Project")
-# ----------------------------
-# ตั้งค่าเพจ
-# ----------------------------
+
 st.set_page_config(
-    page_title="Pastel AI Health Project",
-    page_icon="🌸",
+    page_title="Health Screening",
+    page_icon="🩺",
     layout="centered"
 )
- 
-# ----------------------------
-# CSS ธีมพาสเทล
-# ----------------------------
+
+# ---------- THEME ----------
+
 st.markdown("""
 <style>
-.stApp {
-    background: linear-gradient(to bottom, #FDEFF4, #E3F2FD);
+
+.stApp{
+background-color:#dff3ff;
 }
- 
-h1, h2, h3 {
-    text-align: center;
-    color: #5D6D7E;
+
+.title{
+text-align:center;
+color:#0f6f8f;
 }
- 
-.stButton>button {
-    background-color: #A8DADC;
-    color: black;
-    border-radius: 15px;
-    height: 3em;
-    width: 100%;
-    font-size: 16px;
+
+.subtitle{
+text-align:center;
+color:#3a7f97;
+margin-bottom:25px;
 }
- 
-.card {
-    background-color: white;
-    padding: 30px;
-    border-radius: 20px;
-    box-shadow: 0px 6px 18px rgba(0,0,0,0.08);
+
+.box{
+background:white;
+padding:20px;
+border-radius:12px;
+box-shadow:0px 2px 8px rgba(0,0,0,0.1);
+margin-bottom:20px;
 }
- 
-.footer {
-    text-align: center;
-    font-size: 12px;
-    color: gray;
-    margin-top: 30px;
+
+.notice{
+background:#e9f7ff;
+padding:15px;
+border-left:6px solid #3aa7c9;
+border-radius:8px;
 }
+
+.result{
+background:#f4fbff;
+padding:20px;
+border-radius:10px;
+border:1px solid #cfeaf5;
+}
+
 </style>
 """, unsafe_allow_html=True)
- 
-# ----------------------------
-# Session state คุมหน้า
-# ----------------------------
-if "page" not in st.session_state:
-    st.session_state.page = "home"
- 
-# ============================
-# หน้าแรก (Landing Page)
-# ============================
-if st.session_state.page == "home":
- 
-    st.markdown('<div class="card">', unsafe_allow_html=True)
- 
-    st.markdown("## 🩺 AI Health Screening Project")
-    st.markdown("### 🌸 ระบบคัดกรองสุขภาพเบื้องต้น")
- 
- 
-    st.markdown("""
-    💡 **วัตถุประสงค์ของเว็บไซต์นี้**
- 
-    เว็บไซต์นี้ถูกพัฒนาขึ้นเพื่อการศึกษาในรายวิชา  
-    เกี่ยวกับ Data Science และปัญญาประดิษฐ์  
- 
-    ระบบนี้เป็นเพียงการจำลองการวิเคราะห์อาการเบื้องต้น  
-    ไม่มีการจัดเก็บ เผยแพร่ หรือใช้ข้อมูลในเชิงพาณิชย์
-    """)
- 
-    st.info("⚠️ ใช้เพื่อการศึกษาเท่านั้น ไม่สามารถใช้แทนการวินิจฉัยทางการแพทย์ได้")
- 
-    if st.button("🌷 เข้าสู่ระบบคัดกรองสุขภาพ"):
-        st.session_state.page = "app"
-        st.rerun()
- 
-    st.markdown('</div>', unsafe_allow_html=True)
- 
-# ============================
-# หน้าแอพคัดกรอง
-# ============================
-elif st.session_state.page == "app":
- 
-    st.title("🌸 ระบบคัดกรองสุขภาพเบื้องต้นด้วย AI")
-    st.markdown("ระบบนี้ใช้เพื่อประเมินเบื้องต้นเท่านั้น")
- 
-    if st.button("← กลับหน้าแรก"):
-        st.session_state.page = "home"
-        st.rerun()
- 
-    st.divider()
- 
-    # ฟอร์ม
-    with st.form("health_form"):
- 
-        col1, col2 = st.columns(2)
- 
-        with col1:
-            age = st.number_input("🎂 อายุ", 1, 120, 25)
-            temperature = st.slider("🌡 อุณหภูมิร่างกาย (°C)", 35.0, 42.0, 36.5)
-            chronic = st.selectbox("💊 โรคประจำตัว", ["ไม่มี", "เบาหวาน", "ความดัน", "โรคหัวใจ"])
- 
-        with col2:
-            fever = st.checkbox("🤒 มีไข้")
-            cough = st.checkbox("😷 ไอ")
-            sore_throat = st.checkbox("🗣 เจ็บคอ")
-            headache = st.checkbox("🤕 ปวดหัว")
-            chest_pain = st.checkbox("❤️ เจ็บหน้าอก")
-            fatigue = st.checkbox("😴 อ่อนเพลีย")
- 
-        other_symptoms = st.text_area("📝 อาการเพิ่มเติม")
- 
-        submitted = st.form_submit_button("🔍 วิเคราะห์สุขภาพ")
- 
-    # วิเคราะห์
-    def analyze():
-        score = 0
-        disease = "ยังไม่สามารถระบุได้ชัดเจน"
- 
-        if fever: score += 1
-        if cough: score += 1
-        if sore_throat: score += 1
-        if headache: score += 1
-        if chest_pain: score += 2
-        if fatigue: score += 1
-        if temperature > 38: score += 1
- 
-        if fever and cough and sore_throat:
-            disease = "ไข้หวัด / ไข้หวัดใหญ่"
- 
-        if chest_pain and chronic == "โรคหัวใจ":
-            disease = "ภาวะเสี่ยงโรคหัวใจ"
- 
-        risk_percent = min(score * 15, 100)
-        return disease, risk_percent
- 
-    def recommend_specialist(disease):
-        if "หัวใจ" in disease:
-            return "👨‍⚕️ แพทย์โรคหัวใจ"
-        elif "ไข้หวัด" in disease:
-            return "👩‍⚕️ แพทย์ทั่วไป"
-        else:
-            return "👨‍⚕️ แพทย์ทั่วไป"
- 
-    # แสดงผล
-    if submitted:
- 
-        with st.spinner("🤖 AI กำลังวิเคราะห์..."):
-            time.sleep(1.5)
- 
-        disease, risk = analyze()
-        specialist = recommend_specialist(disease)
- 
-        st.markdown('<div class="card">', unsafe_allow_html=True)
- 
-        st.subheader("📊 ผลการวิเคราะห์เบื้องต้น")
-        st.write(f"🔎 โรคที่เป็นไปได้: **{disease}**")
-        st.write(f"{specialist}")
- 
-        st.write("📈 ระดับความเสี่ยง")
-        st.progress(risk)
-        st.write(f"{risk}%")
- 
-        if other_symptoms:
-            st.markdown("### 📝 อาการเพิ่มเติม")
-            st.write(other_symptoms)
- 
-        if risk >= 60:
-            st.warning("⚠️ อาการค่อนข้างรุนแรง ควรพบแพทย์โดยเร็ว")
-        else:
-            st.info("🌼 ควรพักผ่อนและสังเกตอาการเพิ่มเติม")
- 
-        st.markdown("""
-        🏥 หากมีอาการเจ็บหน้าอกรุนแรง หายใจลำบาก หน้ามืด  
-        ควรไปโรงพยาบาลทันที
-        """)
- 
-        st.markdown('</div>', unsafe_allow_html=True)
- 
-    st.markdown('<div class="footer">Pastel AI Health Screening | Educational Project Only</div>', unsafe_allow_html=True)
 
+# ---------- HEADER ----------
+
+st.markdown("<h1 class='title'>🩺 ระบบคัดกรองอาการเบื้องต้น</h1>", unsafe_allow_html=True)
+st.markdown("<p class='subtitle'>AI Health Symptom Screening</p>", unsafe_allow_html=True)
+
+# ---------- NOTICE ----------
+
+st.markdown("""
+<div class="notice">
+
+เว็บไซต์นี้ใช้สำหรับ **การศึกษาเท่านั้น**
+
+ผลการวิเคราะห์เป็นเพียงแนวทางด้านสุขภาพเบื้องต้น  
+ไม่สามารถใช้แทนการวินิจฉัยจากแพทย์ได้
+
+This website is for educational purposes only.
+
+</div>
+""", unsafe_allow_html=True)
+
+# ---------- วิเคราะห์อาการ ----------
+
+def analyze(symptom):
+
+    text = symptom.lower()
+
+    result = ""
+
+    if "ไข้" in text or "ไอ" in text or "เจ็บคอ" in text:
+        result += """
+**โรคที่อาจเกี่ยวข้อง : ไข้หวัด / ไข้หวัดใหญ่**
+
+คำอธิบาย  
+เป็นการติดเชื้อไวรัสในระบบทางเดินหายใจ ทำให้มีไข้ ไอ เจ็บคอ อ่อนเพลีย
+
+อาการที่พบบ่อย  
+- มีไข้  
+- ไอ  
+- เจ็บคอ  
+- อ่อนเพลีย
+
+คำแนะนำเบื้องต้น  
+พักผ่อน ดื่มน้ำมาก ๆ และสังเกตอาการ หากไข้สูงควรพบแพทย์
+
+---
+"""
+
+    if "ปวดหัว" in text or "ปวดศีรษะ" in text:
+        result += """
+**โรคที่อาจเกี่ยวข้อง : อาการปวดศีรษะจากความเครียด**
+
+คำอธิบาย  
+มักเกิดจากการพักผ่อนไม่เพียงพอ ความเครียด หรือการใช้สายตานาน
+
+อาการที่พบบ่อย  
+- ปวดศีรษะ  
+- ตึงบริเวณศีรษะ  
+- รู้สึกล้า
+
+คำแนะนำ  
+พักผ่อนให้เพียงพอ และลดการใช้หน้าจอ
+
+---
+"""
+
+    if "เวียนหัว" in text or "หน้ามืด" in text:
+        result += """
+**โรคที่อาจเกี่ยวข้อง : อาการเวียนศีรษะ**
+
+คำอธิบาย  
+อาจเกิดจากความดันโลหิตต่ำ พักผ่อนไม่พอ หรือร่างกายอ่อนเพลีย
+
+อาการที่พบบ่อย  
+- เวียนศีรษะ  
+- หน้ามืด  
+- รู้สึกโคลงเคลง
+
+คำแนะนำ  
+นั่งพัก ดื่มน้ำ และหลีกเลี่ยงการลุกขึ้นเร็ว
+
+---
+"""
+
+    if "กลืน" in text or "กลืนน้ำลาย" in text:
+        result += """
+**โรคที่อาจเกี่ยวข้อง : คออักเสบ**
+
+คำอธิบาย  
+การอักเสบของลำคอจากการติดเชื้อ ทำให้รู้สึกเจ็บเวลาพูดหรือกลืน
+
+อาการที่พบบ่อย  
+- เจ็บคอ  
+- กลืนลำบาก  
+- ระคายคอ
+
+คำแนะนำ  
+ดื่มน้ำอุ่น พักเสียง และหลีกเลี่ยงอาหารเผ็ดจัด
+
+---
+"""
+
+    if result == "":
+        result = """
+ไม่สามารถประเมินอาการได้ชัดเจนจากข้อมูลที่กรอก
+
+คำแนะนำ  
+- สังเกตอาการเพิ่มเติม  
+- พักผ่อนให้เพียงพอ  
+- หากมีอาการรุนแรงควรพบแพทย์
+"""
+
+    result += "\n⚠️ นี่เป็นเพียงการประเมินเบื้องต้น ไม่ใช่การวินิจฉัยโรค"
+
+    return result
+
+
+# ---------- INPUT ----------
+
+symptom = st.text_area(
+"กรอกอาการของคุณ",
+placeholder="เช่น ปวดหัว มีไข้ เวียนหัว กลืนน้ำลายแล้วเจ็บ"
+)
+
+# ---------- BUTTON ----------
+
+if st.button("วิเคราะห์อาการ"):
+
+    if symptom == "":
+        st.warning("กรุณากรอกอาการก่อน")
+
+    else:
+
+        st.markdown("<div class='result'>", unsafe_allow_html=True)
+
+        st.subheader("ผลการวิเคราะห์เบื้องต้น")
+
+        st.write(analyze(symptom))
+
+        st.markdown("</div>", unsafe_allow_html=True)
